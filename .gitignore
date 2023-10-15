@@ -16,8 +16,8 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
-.iml
-.idea
+Verificador-CPF.iml
+/idea
 
 ### NetBeans ###
 /nbproject/private/
