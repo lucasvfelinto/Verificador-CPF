@@ -3,11 +3,10 @@ public class Main {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
 
+        System.out.print("Digite o CPF: ");
+        String inCPF = in.nextLine();
         // Entra em um loop infinito, permitindo que o usuário insira o CPF até que seja válido
         while (true) {
-            System.out.print("Digite o CPF: ");
-            String inCPF = in.nextLine();
-
             inCPF = removeFormat(inCPF); // Remove qualquer formatação do CPF
 
             int status = checkCPF(inCPF);
@@ -25,31 +24,35 @@ public class Main {
                     System.out.print("CPF: "+cpfFormat(inCPF)+ " é Inválido");
                     return;
             }
+            System.out.print("Digite novamente o CPF: ");
+            inCPF = in.nextLine();
         }
     }
     public static int checkCPF(String cpf) {
-
         // Verifique o tamanho do CPF
         if (!checkSize(cpf)) {
             return 1;
         }
-
         // Verifique se todos os dígitos são iguais (dígitos repetidos)
-        char firstDigit = cpf.charAt(0);
-        for (int i = 1; i < cpf.length(); i++) {
-            if (cpf.charAt(i) != firstDigit) {
-                // Se encontrar um dígito diferente do primeiro, não são todos iguais
-                break;
-            }
-            if (i == cpf.length() - 1) {
-                return 2;
-            }
+        if (hasRepeatedDigits(cpf)){
+            return 2;
         }
+
         if (isCPFValid(cpf)) {
             return 3;
         } else {
             return 4;
         }
+    }
+    // Verifica se todos os dígitos são iguais
+    public static boolean hasRepeatedDigits(String cpf) {
+        char firstDigit = cpf.charAt(0);
+        for (int i = 1; i < cpf.length(); i++) {
+            if (cpf.charAt(i) != firstDigit) {
+                return false; // Se encontrar um dígito diferente do primeiro, não são todos iguais
+            }
+        }
+        return true; // Se chegou até aqui, todos os dígitos são iguais
     }
 
     // Verifica se o tamanho do CPF é 11 dígitos
