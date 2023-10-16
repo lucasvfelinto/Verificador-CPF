@@ -3,28 +3,55 @@ public class Main {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
 
-        String inCPF;
-
         // Entra em um loop infinito, permitindo que o usuário insira o CPF até que seja válido
         while (true) {
             System.out.print("Digite o CPF: ");
-            inCPF = in.nextLine();
+            String inCPF = in.nextLine();
 
             inCPF = removeFormat(inCPF); // Remove qualquer formatação do CPF
 
-            if (!checkSize(inCPF)) {
-                System.out.println("CPF inválido!. O CPF deve conter 11 números.");
-            } else {
-                break; // Sai do loop se o CPF tiver 11 dígitos e não houver caracteres não numéricos
-
+            int status = checkCPF(inCPF);
+            switch (status){
+                case 1:
+                    System.out.println("O CPF deve ter 11 dígitos.");
+                    break;
+                case 2:
+                    System.out.println("O CPF não pode consistir em dígitos repetidos.");
+                    break;
+                case 3:
+                    System.out.print("O CPF: "+cpfFormat(inCPF)+ " é Válido");
+                    return;
+                case 4:
+                    System.out.print("CPF: "+cpfFormat(inCPF)+ " é Inválido");
+                    return;
             }
         }
-        if (isCPFValid(inCPF)) {
-            System.out.println("O CPF: "+cpfFormat(inCPF)+ " é Válido");
+    }
+    public static int checkCPF(String cpf) {
+
+        // Verifique o tamanho do CPF
+        if (!checkSize(cpf)) {
+            return 1;
+        }
+
+        // Verifique se todos os dígitos são iguais (dígitos repetidos)
+        char firstDigit = cpf.charAt(0);
+        for (int i = 1; i < cpf.length(); i++) {
+            if (cpf.charAt(i) != firstDigit) {
+                // Se encontrar um dígito diferente do primeiro, não são todos iguais
+                break;
+            }
+            if (i == cpf.length() - 1) {
+                return 2;
+            }
+        }
+        if (isCPFValid(cpf)) {
+            return 3;
         } else {
-            System.out.println("O CPF: "+cpfFormat(inCPF)+ " é Inválido");
+            return 4;
         }
     }
+
     // Verifica se o tamanho do CPF é 11 dígitos
     public static boolean checkSize(String cpf){
         return cpf.length() == 11;
