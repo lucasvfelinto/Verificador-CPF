@@ -1,40 +1,61 @@
 import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
 
+        while (true) {
         System.out.print("Digite o CPF: ");
         String inCPF = in.nextLine();
-        // Entra em um loop infinito, permitindo que o usuário insira o CPF até que seja válido
-        while (true) {
-            inCPF = removeFormat(inCPF); // Remove qualquer formatação do CPF
+        // Entra em um loop infinito, permitindo que o usuário insira o CPF até que seja
+        // válido
 
-            int status = checkCPF(inCPF);
-            switch (status){
-                case 1:
-                    System.out.println("O CPF deve ter 11 dígitos.");
-                    break;
-                case 2:
-                    System.out.println("O CPF não pode consistir em dígitos repetidos.");
-                    break;
-                case 3:
-                    System.out.print("O CPF: "+cpfFormat(inCPF)+ " é Válido");
-                    return;
-                case 4:
-                    System.out.print("CPF: "+cpfFormat(inCPF)+ " é Inválido");
-                    return;
-            }
-            System.out.print("Digite novamente o CPF: ");
-            inCPF = in.nextLine();
+            while (true) {
+                inCPF = removeFormat(inCPF); // Remove qualquer formatação do CPF
+
+                int status = checkCPF(inCPF);
+                switch (status) {
+                    case 1:
+                        System.out.println("O CPF deve ter 11 dígitos.");
+                        break;
+                    case 2:
+                        System.out.println("O CPF não pode consistir em dígitos repetidos.");
+                        break;
+                    case 3:
+                        System.out.print("O CPF: " + cpfFormat(inCPF) + " é Válido");
+                        break;
+                    case 4:
+                        System.out.print("CPF: " + cpfFormat(inCPF) + " é Inválido");
+                        break;
+                }
+                if (status == 3 || status == 4) {
+                    System.out.println("\nDeseja verificar outro CPF?");
+                    String ans = in.nextLine();
+                    if (ans.equalsIgnoreCase("Sim") || ans.equalsIgnoreCase("S") || ans.equalsIgnoreCase("Yes") || ans.equalsIgnoreCase("Y")) {
+                        System.out.println("Tudo bem...\n");
+                        try {
+                            Thread.sleep(1000); // Adiciona um delay de 1 segundo
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        break; // Sair do segundo loop e voltar para o primeiro
+                    } else {
+                        return;
+                    }
+                }
+                System.out.print("Digite novamente o CPF: ");
+                inCPF = in.nextLine();
+            }           
         }
     }
+
     public static int checkCPF(String cpf) {
         // Verifique o tamanho do CPF
         if (!checkSize(cpf)) {
             return 1;
         }
         // Verifique se todos os dígitos são iguais (dígitos repetidos)
-        if (hasRepeatedDigits(cpf)){
+        if (hasRepeatedDigits(cpf)) {
             return 2;
         }
 
@@ -44,6 +65,7 @@ public class Main {
             return 4;
         }
     }
+
     // Verifica se todos os dígitos são iguais
     public static boolean hasRepeatedDigits(String cpf) {
         char firstDigit = cpf.charAt(0);
@@ -56,19 +78,22 @@ public class Main {
     }
 
     // Verifica se o tamanho do CPF é 11 dígitos
-    public static boolean checkSize(String cpf){
+    public static boolean checkSize(String cpf) {
         return cpf.length() == 11;
     }
+
     // Remove qualquer formatação do CPF
-    public static String removeFormat(String cpf){
+    public static String removeFormat(String cpf) {
         cpf = cpf.replaceAll("[^0-9]", "");
         return cpf;
     }
+
     // Formata o CPF no padrão XXX.XXX.XXX-XX
-    public static String cpfFormat(String cpf){
+    public static String cpfFormat(String cpf) {
         cpf = cpf.replaceAll("^(\\d{3})(\\d{3})(\\d{3})(\\d{2})$", "$1.$2.$3-$4");
         return cpf;
     }
+
     // Verifica a validade do CPF
     public static boolean isCPFValid(String cpf) {
         // Obtém os primeiros nove dígitos do CPF
@@ -81,7 +106,7 @@ public class Main {
         String numerosCPFdigito1 = numerosCPF + primeiroDigito;
 
         // Remove o primeiro dígito do início da string
-        numerosCPFdigito1 = numerosCPFdigito1.substring(1,10);
+        numerosCPFdigito1 = numerosCPFdigito1.substring(1, 10);
 
         // Calcula o segundo dígito verificador
         int segundoDigito = calcularDigitoVerificador(numerosCPFdigito1, 10);
@@ -89,6 +114,7 @@ public class Main {
         // Verifica se os dígitos calculados correspondem aos dígitos reais
         return cpf.endsWith(String.valueOf(primeiroDigito) + String.valueOf(segundoDigito));
     }
+
     // Calcula o dígito verificador
     public static int calcularDigitoVerificador(String numerosCPF, int multiplicador) {
         int total = 0;
@@ -101,7 +127,8 @@ public class Main {
         }
         // Calcula o resto da divisão do total por 11
         int resto = total % 11;
-        // Se o resto for menor que 2, o dígito verificador é 0, caso contrário é 11 menos o resto
+        // Se o resto for menor que 2, o dígito verificador é 0, caso contrário é 11
+        // menos o resto
         return (resto < 2) ? 0 : (11 - resto);
     }
 }
